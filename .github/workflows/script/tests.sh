@@ -13,18 +13,6 @@ emqx_prepare(){
     pip3 install pytest
 }
 
-emqx_build_to_zip(){
-    cd ${REL_PATH}
-    pkg=${EMQX_NAME}-${SYSTEM}-${EMQX_DEPS_DEFAULT_VSN}.zip
-    make ${EMQX_NAME}
-    cd _build/${EMQX_NAME}/rel/ && zip -rq $pkg emqx && mv $pkg ${PACKAGE_PATH}
-}
-
-emqx_build_to_pkg(){
-    cd ${REL_PATH}
-    make ${EMQX_NAME}-pkg
-}
-
 emqx_test(){
     cd ${PACKAGE_PATH}
 
@@ -63,10 +51,10 @@ emqx_test(){
                 rm -rf ${PACKAGE_PATH}/${SYSTEM}/${EMQX_NAME}/emqx
             ;;
             "deb")
-                 if [ $SYSTEM == 'debian7' ];then
+                if [ $SYSTEM == 'debian7' ];then
                     echo "Skip the debian7 deb package test"
                     continue
-                 fi
+                fi
                 packagename=`basename ${PACKAGE_PATH}/${EMQX_NAME}-${SYSTEM}-*.deb`
                 dpkg -i ${PACKAGE_PATH}/$packagename
                 if [ $(dpkg -l |grep emqx |awk '{print $1}') != "ii" ]
@@ -162,6 +150,4 @@ running_test(){
 }
 
 emqx_prepare
-emqx_build_to_zip
-emqx_build_to_pkg
 emqx_test
